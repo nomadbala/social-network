@@ -19,10 +19,10 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(unique = true, nullable = false, name = "login")
+    @Column(unique = true, name = "login")
     private String login;
 
-    @Column(unique = true, nullable = false, name = "email")
+    @Column(unique = true, name = "email")
     private String email;
 
     @Column(nullable = false, name = "password")
@@ -31,15 +31,6 @@ public class User {
     @Column(name = "username")
     private String username;
 
-//    @OneToOne(fetch = FetchType.EAGER)
-//    @JoinTable(
-//            name = "user_credentials",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_credentials_id")
-//    )
-//    @Column(unique = true, nullable = false, name = "user_credentials_id")
-//    private UserCredentials userCredentialsId;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -47,5 +38,4 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
-
 }

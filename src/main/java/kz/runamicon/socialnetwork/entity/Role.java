@@ -4,12 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
-@Entity(name = "user_roles")
+import java.util.Set;
+
+@Entity(name = "roles")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Role {
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
@@ -18,8 +21,15 @@ public class Role {
     @Column(name = "name")
     private String name;
 
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
+
     public Role(String name) {
-        this.id = 0L;
         this.name = name;
+    }
+
+    @Override
+    public String getAuthority() {
+        return getName();
     }
 }

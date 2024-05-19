@@ -1,21 +1,22 @@
 package kz.runamicon.socialnetwork.util;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import org.springframework.stereotype.Component;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Component
 public class JwtUtil {
     private final SecretKey secretKey;
 
     public JwtUtil() {
-        this.secretKey = new SecretKeySpec("jan871cnxbe127".getBytes(), "AES");
+        this.secretKey = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
     }
 
     public String extractLogin(String token) {
@@ -28,24 +29,24 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+        //return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        return Jwts.parser().verifyWith(secretKey).build().parseClaimsJws(token).getBody();
     }
 
-    private String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-        long ms = System.currentTimeMillis();
+        long currentTimeMillis = System.currentTimeMillis();
 
-        return Jwts
-                .builder()
-                .claims(claims)
-                .subject(subject)
-                .issuedAt(new Date(ms))
-                .expiration(new Date(ms + 1000 * 60 * 60 * 10))
-                .signWith(secretKey, Jwts.SIG.HS256)
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(currentTimeMillis))
+                .setExpiration(new Date(currentTimeMillis + 1000 * 60 * 60 * 10)) // 10 hours
+                .signWith(secretKey)
                 .compact();
     }
 
@@ -55,9 +56,10 @@ public class JwtUtil {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        Date expiration = extractExpiration(token);
+        return expiration.before(new Date());
     }
-    
+
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
