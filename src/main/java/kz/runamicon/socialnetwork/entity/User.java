@@ -6,10 +6,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
-@AllArgsConstructor
-@RequiredArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -31,6 +30,16 @@ public class User {
 
     @Column(name = "username")
     private String username;
+
+    public User(String login, String email, String password, String username) {
+        this.login = login;
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.roles = new HashSet<>();
+    }
+
+    public User() {}
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

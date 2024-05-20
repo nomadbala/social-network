@@ -4,14 +4,17 @@ import kz.runamicon.socialnetwork.dto.LoginRequest;
 import kz.runamicon.socialnetwork.util.JwtUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
     @NonNull
     private final JwtUtil jwtUtil;
@@ -23,8 +26,15 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public String login(LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-        return jwtUtil.generateToken(userDetails);
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+            return jwtUtil.generateToken(userDetails);
+        } catch (AuthenticationException e) {
+            // Логируем сообщение об ошибке
+            log.error("Authentication failed: {}", e.getMessage());
+            // Возвращаем сообщение об ошибке
+            return "Authentication failed: " + e.getMessage();
+        }
     }
 }

@@ -6,10 +6,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
-@RequiredArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -28,5 +27,8 @@ public class Role {
 
     public Role(String name) {
         this.name = name;
+        this.users = new HashSet<>();
     }
+
+    public Role() {}
 }
