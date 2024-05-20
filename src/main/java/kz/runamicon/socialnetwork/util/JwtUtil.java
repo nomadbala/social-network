@@ -1,10 +1,12 @@
 package kz.runamicon.socialnetwork.util;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,12 +14,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
+@Slf4j
 public class JwtUtil {
-    private final SecretKey secretKey;
-
-    public JwtUtil() {
-        this.secretKey = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
-    }
+    private final SecretKey secretKey = Jwts.SIG.HS256.key().build();
 
     public String extractLogin(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -29,8 +28,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        //return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
-        return Jwts.parser().verifyWith(secretKey).build().parseClaimsJws(token).getBody();
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -42,17 +40,22 @@ public class JwtUtil {
         long currentTimeMillis = System.currentTimeMillis();
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(currentTimeMillis))
-                .setExpiration(new Date(currentTimeMillis + 1000 * 60 * 60 * 10)) // 10 hours
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(new Date(currentTimeMillis))
+                .expiration(new Date(currentTimeMillis + 1000 * 60 * 60 * 10))
                 .signWith(secretKey)
                 .compact();
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        String username = extractLogin(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            Jws<Claims> claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+            return claims.getPayload().getSubject().equals(userDetails.getUsername()) && !isTokenExpired(token);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {
