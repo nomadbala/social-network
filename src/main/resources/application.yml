@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 8080
 spring:
   jwt:
     secret: qrix91723ncifxawlj1ec047124
@@ -7,7 +7,7 @@ spring:
   application:
     name: social-network
   datasource:
-    url: jdbc:postgresql://localhost:5433/social_network_db
+    url: jdbc:postgresql://localhost:5432/social_network_db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver

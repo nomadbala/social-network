@@ -27,8 +27,8 @@ public class AuthenticationService {
 
     public String login(LoginRequest request) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
+            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getLogin());
             return jwtUtil.generateToken(userDetails);
         } catch (AuthenticationException e) {
             log.error("Authentication failed: {}", e.getMessage());
