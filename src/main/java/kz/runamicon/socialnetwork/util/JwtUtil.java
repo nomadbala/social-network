@@ -28,7 +28,12 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        return Jwts
+                .parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -40,10 +45,10 @@ public class JwtUtil {
         long currentTimeMillis = System.currentTimeMillis();
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(currentTimeMillis))
-                .setExpiration(new Date(currentTimeMillis + 1000 * 60 * 60 * 10))
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(new Date(currentTimeMillis))
+                .expiration(new Date(currentTimeMillis + 1000 * 60 * 60 * 10))
                 .signWith(secretKey)
                 .compact();
     }

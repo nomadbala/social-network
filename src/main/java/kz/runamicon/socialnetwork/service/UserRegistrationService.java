@@ -11,8 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +26,7 @@ public class UserRegistrationService {
 
     public void register(RegisterRequest request) {
         Role role = roleRepository.findByName("ROLE_USER");
+
         if (role == null) {
             role = new Role("ROLE_USER");
             roleRepository.save(role);

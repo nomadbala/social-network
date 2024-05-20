@@ -1,9 +1,6 @@
 server:
   port: 8080
 spring:
-  jwt:
-    secret: qrix91723ncifxawlj1ec047124
-    expiration: 3600000
   application:
     name: social-network
   datasource:
