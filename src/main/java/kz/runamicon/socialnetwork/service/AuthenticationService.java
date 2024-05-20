@@ -31,9 +31,7 @@ public class AuthenticationService {
             UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
             return jwtUtil.generateToken(userDetails);
         } catch (AuthenticationException e) {
-            // Логируем сообщение об ошибке
             log.error("Authentication failed: {}", e.getMessage());
-            // Возвращаем сообщение об ошибке
             return "Authentication failed: " + e.getMessage();
         }
     }

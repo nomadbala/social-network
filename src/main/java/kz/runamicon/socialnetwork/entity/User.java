@@ -1,14 +1,14 @@
 package kz.runamicon.socialnetwork.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -38,8 +38,6 @@ public class User {
         this.username = username;
         this.roles = new HashSet<>();
     }
-
-    public User() {}
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

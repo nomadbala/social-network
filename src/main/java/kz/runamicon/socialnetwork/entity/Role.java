@@ -1,14 +1,12 @@
 package kz.runamicon.socialnetwork.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -29,6 +27,4 @@ public class Role {
         this.name = name;
         this.users = new HashSet<>();
     }
-
-    public Role() {}
 }

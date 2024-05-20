@@ -28,10 +28,10 @@ public class JwtService extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().startsWith("/api/auth/login")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+//        if (request.getRequestURI().startsWith("/api/auth/login")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
 
         String header = request.getHeader("Authorization");
 
