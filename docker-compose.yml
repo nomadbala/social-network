@@ -1,0 +1,27 @@
+version: '3.8'
+
+volumes:
+  social_network:
+
+services:
+  social_network:
+    image: social_network_backend
+    build:
+      context: .
+    container_name: social_network_backend
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/social_network_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+    ports:
+      - "8080:8080/tcp"
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: social_network_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=social_network_db
