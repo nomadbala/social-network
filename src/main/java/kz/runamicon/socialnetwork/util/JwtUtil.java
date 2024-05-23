@@ -2,8 +2,8 @@ package kz.runamicon.socialnetwork.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-@Slf4j
 public class JwtUtil {
-    private final SecretKey secretKey = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
+    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String extractLogin(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -58,7 +57,6 @@ public class JwtUtil {
             String username = extractLogin(token);
             return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
         } catch (Exception e) {
-            log.error("Error validating JWT token: {}", e.getMessage());
             return false;
         }
     }

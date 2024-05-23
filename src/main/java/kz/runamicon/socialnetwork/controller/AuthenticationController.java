@@ -8,7 +8,6 @@ import kz.runamicon.socialnetwork.dto.RegisterRequest;
 import kz.runamicon.socialnetwork.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @RestController
 @RequestMapping("/api/auth")
-@Slf4j
 public class AuthenticationController {
     @NonNull
     private final UserService userService;
@@ -29,9 +27,10 @@ public class AuthenticationController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void register(
-            @RequestBody @Parameter(description = "User register request") RegisterRequest registerRequest
+            @RequestBody
+            @Parameter(description = "User register request")
+            RegisterRequest registerRequest
     ) {
-        log.info("Register request: {}", registerRequest);
         userService.register(registerRequest);
     }
 
@@ -42,9 +41,10 @@ public class AuthenticationController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public String login(
-            @RequestBody @Parameter(description = "User login request") LoginRequest loginRequest
+            @RequestBody
+            @Parameter(description = "User login request")
+            LoginRequest loginRequest
     ) {
-        log.info("Login request: {}", loginRequest);
         return userService.login(loginRequest);
     }
 }

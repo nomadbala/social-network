@@ -1,10 +1,10 @@
 package kz.runamicon.socialnetwork.config;
 
+import kz.runamicon.socialnetwork.exception.SecurityFilterChainInitializationException;
 import kz.runamicon.socialnetwork.service.CustomUserDetailService;
 import kz.runamicon.socialnetwork.service.JwtService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,20 +24,30 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Configuration
 @EnableWebSecurity
-@Slf4j
 public class SecurityConfig {
-    private static final String[] AUTH_WHITELIST = {
+    private static final String[] URLS_NO_AUTHORIZE_PERMIT = {
             "api/auth/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**"
     };
+
+    private static final List<String> CORS_ALLOWED_ORIGINS = List.of(
+            "http://localhost:5173"
+    );
+
+    private static final List<String> CORS_ALLOWED_METHODS = List.of(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS"
+    );
+
+    private static final List<String> CORS_ALLOWED_HEADERS = List.of(
+            "content-type", "authorization"
+    );
 
     @NonNull
     private final CustomUserDetailService userDetailService;
@@ -50,30 +60,27 @@ public class SecurityConfig {
         try {
             http
                     .csrf(AbstractHttpConfigurer::disable)
-                    .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-                    .authorizeHttpRequests(authorizeRequests ->
-                            authorizeRequests
-                                    .requestMatchers(AUTH_WHITELIST).permitAll()
-                                    .anyRequest().authenticated()
-                    )
+                    .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer
+                            .configurationSource(corsConfigurationSource()))
+                    .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                            .requestMatchers(URLS_NO_AUTHORIZE_PERMIT).permitAll()
+                            .anyRequest().authenticated())
                     .sessionManagement(
-                            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    )
+                            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authenticationProvider(authenticationProvider())
                     .addFilterBefore(jwtService, UsernamePasswordAuthenticationFilter.class);
             return http.build();
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
+            throw new SecurityFilterChainInitializationException("Error initializing security filter chain", e);
         }
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("content-type", "authorization"));
+        configuration.setAllowedOrigins(CORS_ALLOWED_ORIGINS);
+        configuration.setAllowedMethods(CORS_ALLOWED_METHODS);
+        configuration.setAllowedHeaders(CORS_ALLOWED_HEADERS);
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -93,7 +100,6 @@ public class SecurityConfig {
         try {
             return authenticationConfiguration.getAuthenticationManager();
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
