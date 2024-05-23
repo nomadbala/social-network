@@ -15,6 +15,7 @@ import java.io.Serializable;
 @Setter
 @Schema(description = "Registration request entity")
 public class RegisterRequest implements Serializable {
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Serial
     private static final long serialVersionUID = 1L;
 
