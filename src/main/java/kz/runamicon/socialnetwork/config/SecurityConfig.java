@@ -4,7 +4,6 @@ import kz.runamicon.socialnetwork.service.CustomUserDetailService;
 import kz.runamicon.socialnetwork.service.JwtService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,13 +29,29 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Configuration
 @EnableWebSecurity
-@Slf4j
 public class SecurityConfig {
-    private static final String[] AUTH_WHITELIST = {
+    private static final String[] AUTH_URLS_WHITELIST = {
             "api/auth/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**"
+    };
+
+    private static final String[] CORS_URLS_WHITELIST = {
+        "http://localhost:5173",
+    };
+
+    private static final String[] CORS_METHODS_WHITELIST = {
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "OPTIONS"
+    };
+
+    private static final String[] CORS_HEADERS_WHITELIST = {
+        "content-type",
+        "authorization"
     };
 
     @NonNull
@@ -46,14 +61,31 @@ public class SecurityConfig {
     private final JwtService jwtService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
-        try {
-            http
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws RuntimeException {
+        // try {
+        //     http
+        //             .csrf(AbstractHttpConfigurer::disable)
+        //             .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+        //             .authorizeHttpRequests(authorizeRequests ->
+        //                     authorizeRequests
+        //                             .requestMatchers(AUTH_URLS_WHITELIST).permitAll()
+        //                             .anyRequest().authenticated()
+        //             )
+        //             .sessionManagement(
+        //                     session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        //             )
+        //             .authenticationProvider(authenticationProvider())
+        //             .addFilterBefore(jwtService, UsernamePasswordAuthenticationFilter.class);
+        //     return http.build();
+        // } catch (Exception e) {
+        //     throw new RuntimeException(e);
+        // }
+        http
                     .csrf(AbstractHttpConfigurer::disable)
                     .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                     .authorizeHttpRequests(authorizeRequests ->
                             authorizeRequests
-                                    .requestMatchers(AUTH_WHITELIST).permitAll()
+                                    .requestMatchers(AUTH_URLS_WHITELIST).permitAll()
                                     .anyRequest().authenticated()
                     )
                     .sessionManagement(
@@ -62,18 +94,14 @@ public class SecurityConfig {
                     .authenticationProvider(authenticationProvider())
                     .addFilterBefore(jwtService, UsernamePasswordAuthenticationFilter.class);
             return http.build();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        }
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("content-type", "authorization"));
+        configuration.setAllowedOrigins(CORS_URLS_WHITELIST);
+        configuration.setAllowedMethods(CORS_METHODS_WHITELIST);
+        configuration.setAllowedHeaders(CORS_HEADERS_WHITELIST);
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -89,13 +117,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
-        try {
-            return authenticationConfiguration.getAuthenticationManager();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        }
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws RuntimeException {
+        // try {
+        //     return authenticationConfiguration.getAuthenticationManager();
+        // } catch (Exception e) {
+        //     throw new RuntimeException(e);
+        // }
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
