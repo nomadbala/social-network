@@ -6,7 +6,6 @@ import kz.runamicon.socialnetwork.entity.User;
 import kz.runamicon.socialnetwork.exception.RegistrationFailedException;
 import kz.runamicon.socialnetwork.repository.RoleRepository;
 import kz.runamicon.socialnetwork.repository.UserRepository;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,13 +16,10 @@ import java.util.Collections;
 @Service
 @RequiredArgsConstructor
 public class UserRegistrationService {
-    @NonNull
     private final UserRepository userRepository;
 
-    @NonNull
     private final RoleRepository roleRepository;
 
-    @NonNull
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -46,7 +42,7 @@ public class UserRegistrationService {
         try {
             userRepository.save(user);
         } catch (Exception e) {
-            throw new RegistrationFailedException("%s\n%s".formatted(e.getMessage(), request));
+            throw new RegistrationFailedException(e.getMessage(), e);
         }
     }
 }

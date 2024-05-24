@@ -1,9 +1,10 @@
 package kz.runamicon.socialnetwork.config;
 
+import jakarta.servlet.http.HttpServletResponse;
+import kz.runamicon.socialnetwork.exception.AuthenticationManagerFailedException;
 import kz.runamicon.socialnetwork.exception.SecurityFilterChainInitializationException;
 import kz.runamicon.socialnetwork.service.CustomUserDetailService;
 import kz.runamicon.socialnetwork.service.JwtService;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -49,10 +50,8 @@ public class SecurityConfig {
             "content-type", "authorization"
     );
 
-    @NonNull
     private final CustomUserDetailService userDetailService;
 
-    @NonNull
     private final JwtService jwtService;
 
     @Bean
@@ -60,18 +59,21 @@ public class SecurityConfig {
         try {
             http
                     .csrf(AbstractHttpConfigurer::disable)
-                    .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer
-                            .configurationSource(corsConfigurationSource()))
-                    .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                            .requestMatchers(URLS_NO_AUTHORIZE_PERMIT).permitAll()
-                            .anyRequest().authenticated())
-                    .sessionManagement(
-                            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+                    .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
+                            authorizationManagerRequestMatcherRegistry
+                                    .requestMatchers(URLS_NO_AUTHORIZE_PERMIT).permitAll()
+                                    .anyRequest().authenticated()
+                    )
+                    .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
+                            httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint((request, response, authenticationException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                    )
+                    .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authenticationProvider(authenticationProvider())
                     .addFilterBefore(jwtService, UsernamePasswordAuthenticationFilter.class);
             return http.build();
         } catch (Exception e) {
-            throw new SecurityFilterChainInitializationException("Error initializing security filter chain", e);
+            throw new SecurityFilterChainInitializationException(e.getMessage(), e);
         }
     }
 
@@ -100,7 +102,7 @@ public class SecurityConfig {
         try {
             return authenticationConfiguration.getAuthenticationManager();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new AuthenticationManagerFailedException(e.getMessage());
         }
     }
 

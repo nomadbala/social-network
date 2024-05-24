@@ -36,5 +36,16 @@ public class CustomUserDetailService implements UserDetailsService {
                 authorities);
     }
 
+    public UserDetails loadUserById(Long id) {
+        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException(id.toString()));
 
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getLogin(),
+                user.getPassword(),
+                authorities);
+    }
 }

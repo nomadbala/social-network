@@ -1,6 +1,8 @@
 server:
   port: 8080
 spring:
+  jwt:
+    secret: qejx12y7xsdziua
   application:
     name: social-network
   datasource:
@@ -17,10 +19,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-app:
-  jwt:
-    key: 5pAq6zRyX8bC3dV2wS7gN1mK9jF0hL4tUoP6iBvE3nG8xZaQrY7cW2fA
-    algorithm: HS256
-    issuer: http://localhost:8080
-    expiresIn: 1m

@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kz.runamicon.socialnetwork.dto.LoginRequest;
 import kz.runamicon.socialnetwork.dto.RegisterRequest;
 import kz.runamicon.socialnetwork.service.UserService;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
-    @NonNull
     private final UserService userService;
 
     @Operation(

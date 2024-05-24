@@ -36,4 +36,10 @@ public class GlobalExceptionHandler {
     public String handleSecurityFilterChainInitializationException(SecurityFilterChainInitializationException e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler(AuthenticationManagerFailedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleAuthenticationManagerFailedException(AuthenticationManagerFailedException e) {
+        return e.getMessage();
+    }
 }

@@ -40,6 +40,7 @@ public class JwtUtil {
         return createToken(claims, userDetails.getUsername());
     }
 
+
     private String createToken(Map<String, Object> claims, String subject) {
         long currentTimeMillis = System.currentTimeMillis();
 
