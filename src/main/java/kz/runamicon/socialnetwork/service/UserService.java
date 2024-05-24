@@ -3,8 +3,11 @@ package kz.runamicon.socialnetwork.service;
 import kz.runamicon.socialnetwork.dto.LoginRequest;
 import kz.runamicon.socialnetwork.dto.RegisterRequest;
 import kz.runamicon.socialnetwork.dto.UpdateUsernameRequest;
+import kz.runamicon.socialnetwork.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +26,11 @@ public class UserService {
         return authenticationService.login(request);
     }
 
-    public String updateUsername(UpdateUsernameRequest request) {
-        return userDataManipulationService.updateUsername(request);
+    public void updateUsername(UpdateUsernameRequest request) {
+        userDataManipulationService.updateUsername(request);
+    }
+
+    public List<UserDto> findAll() {
+        return userDataManipulationService.findAll();
     }
 }

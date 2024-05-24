@@ -4,6 +4,7 @@ import kz.runamicon.socialnetwork.dto.RegisterRequest;
 import kz.runamicon.socialnetwork.entity.Role;
 import kz.runamicon.socialnetwork.entity.User;
 import kz.runamicon.socialnetwork.exception.RegistrationFailedException;
+import kz.runamicon.socialnetwork.mapper.UserMapper;
 import kz.runamicon.socialnetwork.repository.RoleRepository;
 import kz.runamicon.socialnetwork.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,13 +32,7 @@ public class UserRegistrationService {
                 }
         );
 
-        User user = User
-                .builder()
-                .login(request.login())
-                .username(request.username())
-                .password(passwordEncoder.encode(request.password()))
-                .roles(Collections.singleton(role))
-                .build();
+        User user = UserMapper.INSTANCE.registerRequestToUser(request, passwordEncoder, role);
 
         try {
             userRepository.save(user);
