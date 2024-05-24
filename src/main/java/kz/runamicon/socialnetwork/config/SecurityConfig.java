@@ -1,6 +1,5 @@
 package kz.runamicon.socialnetwork.config;
 
-import jakarta.servlet.http.HttpServletResponse;
 import kz.runamicon.socialnetwork.exception.AuthenticationManagerFailedException;
 import kz.runamicon.socialnetwork.exception.SecurityFilterChainInitializationException;
 import kz.runamicon.socialnetwork.service.CustomUserDetailService;
@@ -32,10 +31,15 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
     private static final String[] URLS_NO_AUTHORIZE_PERMIT = {
-            "api/auth/**",
+            "/api/auth/register",
+            "/api/auth/login",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**"
+    };
+
+    private static final String[] URLS_ADMIN_ROLE_PERMIT = {
+            "/api/user"
     };
 
     private static final List<String> CORS_ALLOWED_ORIGINS = List.of(
@@ -63,10 +67,8 @@ public class SecurityConfig {
                     .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                             authorizationManagerRequestMatcherRegistry
                                     .requestMatchers(URLS_NO_AUTHORIZE_PERMIT).permitAll()
+                                    .requestMatchers(URLS_ADMIN_ROLE_PERMIT).hasAuthority("ADMIN")
                                     .anyRequest().authenticated()
-                    )
-                    .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
-                            httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint((request, response, authenticationException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                     )
                     .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authenticationProvider(authenticationProvider())
@@ -75,6 +77,7 @@ public class SecurityConfig {
         } catch (Exception e) {
             throw new SecurityFilterChainInitializationException(e.getMessage(), e);
         }
+
     }
 
     @Bean
