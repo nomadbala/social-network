@@ -5,16 +5,16 @@ spring:
     secret: qejx12y7xsdziua
   application:
     name: social-network
-  datasource:
-    url: jdbc:postgresql://localhost:5432/social_network_db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+#  datasource:
+#    url: jdbc:postgresql://db:5434/social_network_db
+#    username: postgres
+#    password: postgres
+#    driver-class-name: org.postgresql.Driver
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true

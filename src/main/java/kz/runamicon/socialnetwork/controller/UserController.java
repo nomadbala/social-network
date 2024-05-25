@@ -35,6 +35,12 @@ public class UserController {
         userService.updateUsername(request);
     }
 
+    @PostMapping("/update_email")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateEmail() {
+
+    }
+
     @Operation(
             summary = "Find all users (admin only)",
             description = "Allows admin find all users"
