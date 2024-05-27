@@ -43,6 +43,8 @@ public class UserDataManipulationService {
         }
     }
 
+    @Transactional
+    @Modifying
     public void updateEmail(UpdateEmailRequest request) {
         int updates = userRepository.updateEmail(request.id(), request.newEmail());
 
@@ -51,6 +53,8 @@ public class UserDataManipulationService {
         }
     }
 
+    @Transactional
+    @Modifying
     public JwtAuthenticationToken updateLogin(UpdateLoginRequest request) {
         int updates = userRepository.updateLogin(request.id(), request.newLogin());
 

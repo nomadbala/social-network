@@ -9,7 +9,7 @@ public record UpdateUsernameRequest(
         @Schema(description = "User`s id", example = "1")
         Long id,
 
-        @Schema(description = "User`s new username",  example = "Katrina Barret")
+        @Schema(description = "User`s new username", example = "Katrina Barret")
         String username
 ) implements Serializable {
 }
