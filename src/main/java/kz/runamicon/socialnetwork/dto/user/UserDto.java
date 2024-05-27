@@ -1,4 +1,6 @@
-package kz.runamicon.socialnetwork.dto;
+package kz.runamicon.socialnetwork.dto.user;
+
+import kz.runamicon.socialnetwork.dto.role.RoleDto;
 
 import java.io.Serializable;
 import java.util.Set;

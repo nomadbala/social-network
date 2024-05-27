@@ -1,6 +1,13 @@
-package kz.runamicon.socialnetwork.service;
+package kz.runamicon.socialnetwork.service.user;
 
-import kz.runamicon.socialnetwork.dto.*;
+import kz.runamicon.socialnetwork.dto.authentication.LoginRequest;
+import kz.runamicon.socialnetwork.dto.authentication.RegisterRequest;
+import kz.runamicon.socialnetwork.dto.security.JwtAuthenticationToken;
+import kz.runamicon.socialnetwork.dto.user.UpdateEmailRequest;
+import kz.runamicon.socialnetwork.dto.user.UpdateLoginRequest;
+import kz.runamicon.socialnetwork.dto.user.UpdateUsernameRequest;
+import kz.runamicon.socialnetwork.dto.user.UserDto;
+import kz.runamicon.socialnetwork.service.authentication.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

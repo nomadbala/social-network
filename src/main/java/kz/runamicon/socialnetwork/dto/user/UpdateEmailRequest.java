@@ -1,4 +1,4 @@
-package kz.runamicon.socialnetwork.dto;
+package kz.runamicon.socialnetwork.dto.user;
 
 public record UpdateEmailRequest(
         Long id,

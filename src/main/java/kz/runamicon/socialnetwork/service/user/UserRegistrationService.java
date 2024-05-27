@@ -1,6 +1,6 @@
-package kz.runamicon.socialnetwork.service;
+package kz.runamicon.socialnetwork.service.user;
 
-import kz.runamicon.socialnetwork.dto.RegisterRequest;
+import kz.runamicon.socialnetwork.dto.authentication.RegisterRequest;
 import kz.runamicon.socialnetwork.entity.Role;
 import kz.runamicon.socialnetwork.entity.User;
 import kz.runamicon.socialnetwork.exception.RegistrationFailedException;
@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor

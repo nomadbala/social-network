@@ -1,6 +1,10 @@
-package kz.runamicon.socialnetwork.service;
+package kz.runamicon.socialnetwork.service.user;
 
-import kz.runamicon.socialnetwork.dto.*;
+import kz.runamicon.socialnetwork.dto.security.JwtAuthenticationToken;
+import kz.runamicon.socialnetwork.dto.user.UpdateEmailRequest;
+import kz.runamicon.socialnetwork.dto.user.UpdateLoginRequest;
+import kz.runamicon.socialnetwork.dto.user.UpdateUsernameRequest;
+import kz.runamicon.socialnetwork.dto.user.UserDto;
 import kz.runamicon.socialnetwork.entity.User;
 import kz.runamicon.socialnetwork.exception.UserNotFoundException;
 import kz.runamicon.socialnetwork.mapper.UserMapper;

@@ -1,4 +1,4 @@
-package kz.runamicon.socialnetwork.service;
+package kz.runamicon.socialnetwork.service.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

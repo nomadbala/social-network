@@ -1,7 +1,7 @@
 package kz.runamicon.socialnetwork.mapper;
 
-import kz.runamicon.socialnetwork.dto.RegisterRequest;
-import kz.runamicon.socialnetwork.dto.UserDto;
+import kz.runamicon.socialnetwork.dto.authentication.RegisterRequest;
+import kz.runamicon.socialnetwork.dto.user.UserDto;
 import kz.runamicon.socialnetwork.entity.Role;
 import kz.runamicon.socialnetwork.entity.User;
 import org.mapstruct.Mapper;

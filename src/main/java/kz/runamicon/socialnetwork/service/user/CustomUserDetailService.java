@@ -1,4 +1,4 @@
-package kz.runamicon.socialnetwork.service;
+package kz.runamicon.socialnetwork.service.user;
 
 import kz.runamicon.socialnetwork.entity.User;
 import kz.runamicon.socialnetwork.exception.UserNotFoundException;

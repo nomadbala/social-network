@@ -1,4 +1,4 @@
-package kz.runamicon.socialnetwork.dto;
+package kz.runamicon.socialnetwork.dto.security;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
