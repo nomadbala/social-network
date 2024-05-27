@@ -3,6 +3,7 @@ package kz.runamicon.socialnetwork.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kz.runamicon.socialnetwork.dto.UpdateEmailRequest;
 import kz.runamicon.socialnetwork.dto.UpdateUsernameRequest;
 import kz.runamicon.socialnetwork.dto.UserDto;
 import kz.runamicon.socialnetwork.service.UserService;
@@ -37,8 +38,14 @@ public class UserController {
 
     @PostMapping("/update_email")
     @ResponseStatus(HttpStatus.OK)
-    public void updateEmail() {
+    public void updateEmail(@RequestBody UpdateEmailRequest request) {
+        userService.updateEmail(request);
+    }
 
+    @GetMapping("/verify_email")
+    @ResponseStatus(HttpStatus.OK)
+    public void verifyEmail(@RequestParam String token) {
+        userService.verifyEmail(token);
     }
 
     @Operation(

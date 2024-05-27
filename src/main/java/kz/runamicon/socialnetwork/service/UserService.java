@@ -1,9 +1,6 @@
 package kz.runamicon.socialnetwork.service;
 
-import kz.runamicon.socialnetwork.dto.LoginRequest;
-import kz.runamicon.socialnetwork.dto.RegisterRequest;
-import kz.runamicon.socialnetwork.dto.UpdateUsernameRequest;
-import kz.runamicon.socialnetwork.dto.UserDto;
+import kz.runamicon.socialnetwork.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +25,14 @@ public class UserService {
 
     public void updateUsername(UpdateUsernameRequest request) {
         userDataManipulationService.updateUsername(request);
+    }
+
+    public void updateEmail(UpdateEmailRequest request) {
+        userDataManipulationService.updateEmail(request);
+    }
+
+    public void verifyEmail(String token) {
+        userDataManipulationService.verifyEmail(token);
     }
 
     public List<UserDto> findAll() {
