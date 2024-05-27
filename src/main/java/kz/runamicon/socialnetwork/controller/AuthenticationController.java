@@ -3,6 +3,7 @@ package kz.runamicon.socialnetwork.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kz.runamicon.socialnetwork.dto.JwtAuthenticationToken;
 import kz.runamicon.socialnetwork.dto.LoginRequest;
 import kz.runamicon.socialnetwork.dto.RegisterRequest;
 import kz.runamicon.socialnetwork.service.UserService;
@@ -38,7 +39,7 @@ public class AuthenticationController {
     )
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public String login(
+    public JwtAuthenticationToken login(
             @RequestBody
             @Parameter(description = "User login request")
             LoginRequest loginRequest

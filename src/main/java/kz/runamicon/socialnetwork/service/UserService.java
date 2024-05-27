@@ -19,7 +19,7 @@ public class UserService {
         userRegistrationService.register(request);
     }
 
-    public String login(LoginRequest request) {
+    public JwtAuthenticationToken login(LoginRequest request) {
         return authenticationService.login(request);
     }
 
@@ -31,11 +31,15 @@ public class UserService {
         userDataManipulationService.updateEmail(request);
     }
 
-    public void verifyEmail(String token) {
-        userDataManipulationService.verifyEmail(token);
-    }
-
     public List<UserDto> findAll() {
         return userDataManipulationService.findAll();
+    }
+
+    public JwtAuthenticationToken updateLogin(UpdateLoginRequest request) {
+        return userDataManipulationService.updateLogin(request);
+    }
+
+    public UserDto findById(Long id) {
+        return userDataManipulationService.findById(id);
     }
 }

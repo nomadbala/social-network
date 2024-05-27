@@ -1,6 +1,7 @@
 package kz.runamicon.socialnetwork.service;
 
 import jakarta.transaction.Transactional;
+import kz.runamicon.socialnetwork.dto.JwtAuthenticationToken;
 import kz.runamicon.socialnetwork.dto.LoginRequest;
 import kz.runamicon.socialnetwork.exception.AuthenticationFailedException;
 import kz.runamicon.socialnetwork.util.JwtUtil;
@@ -22,7 +23,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Transactional
-    public String login(LoginRequest request) {
+    public JwtAuthenticationToken login(LoginRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.login(), request.password()));
             UserDetails userDetails = userDetailsService.loadUserByUsername(request.login());

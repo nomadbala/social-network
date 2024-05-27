@@ -3,19 +3,17 @@ package kz.runamicon.socialnetwork.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kz.runamicon.socialnetwork.dto.JwtAuthenticationToken;
 import kz.runamicon.socialnetwork.dto.UpdateEmailRequest;
+import kz.runamicon.socialnetwork.dto.UpdateLoginRequest;
 import kz.runamicon.socialnetwork.dto.UpdateUsernameRequest;
-import kz.runamicon.socialnetwork.dto.UserDto;
 import kz.runamicon.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@Tag(name = "User Controller", description = "Controller responsible for manipulation with user data")
+@Tag(name = "User controller", description = "Controller responsible for manipulation with user data")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @RestController
 @RequestMapping("/api/user")
@@ -36,26 +34,31 @@ public class UserController {
         userService.updateUsername(request);
     }
 
+    @Operation(
+            summary = "User email update",
+            description = "Allows user to update their email"
+    )
     @PostMapping("/update_email")
     @ResponseStatus(HttpStatus.OK)
-    public void updateEmail(@RequestBody UpdateEmailRequest request) {
+    public void updateEmail(
+            @RequestBody
+            @Parameter(description = "Update email request")
+            UpdateEmailRequest request
+    ) {
         userService.updateEmail(request);
     }
 
-    @GetMapping("/verify_email")
-    @ResponseStatus(HttpStatus.OK)
-    public void verifyEmail(@RequestParam String token) {
-        userService.verifyEmail(token);
-    }
-
     @Operation(
-            summary = "Find all users (admin only)",
-            description = "Allows admin find all users"
+            summary = "User login update",
+            description = "Allows user to update their login"
     )
-    @GetMapping
+    @PostMapping("/update_login")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public List<UserDto> findAll() {
-        return userService.findAll();
+    public JwtAuthenticationToken updateLogin(
+            @RequestBody
+            @Parameter(description = "Update login request")
+            UpdateLoginRequest request
+    ) {
+        return userService.updateLogin(request);
     }
 }

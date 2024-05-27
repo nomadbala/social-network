@@ -1,8 +1,6 @@
 package kz.runamicon.socialnetwork.service;
 
-import kz.runamicon.socialnetwork.dto.UpdateEmailRequest;
-import kz.runamicon.socialnetwork.dto.UpdateUsernameRequest;
-import kz.runamicon.socialnetwork.dto.UserDto;
+import kz.runamicon.socialnetwork.dto.*;
 import kz.runamicon.socialnetwork.entity.User;
 import kz.runamicon.socialnetwork.exception.UserNotFoundException;
 import kz.runamicon.socialnetwork.mapper.UserMapper;
@@ -11,12 +9,12 @@ import kz.runamicon.socialnetwork.repository.UserRepository;
 import kz.runamicon.socialnetwork.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -41,24 +39,33 @@ public class UserDataManipulationService {
         }
     }
 
+    public void updateEmail(UpdateEmailRequest request) {
+        int updates = userRepository.updateEmail(request.id(), request.newEmail());
+
+        if (updates == 0) {
+            throw new UserNotFoundException("User with id " + request.id() + " not found.");
+        }
+    }
+
+    public JwtAuthenticationToken updateLogin(UpdateLoginRequest request) {
+        int updates = userRepository.updateLogin(request.id(), request.newLogin());
+
+        if (updates == 0) {
+            throw new UserNotFoundException("User with id " + request.id() + " not found.");
+        }
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.newLogin());
+        return jwtUtil.generateToken(userDetails);
+    }
+
     public List<UserDto> findAll() {
         List<User> users = userRepository.findAll();
         return UserMapper.INSTANCE.usersToUserDtos(users);
     }
 
-    @Transactional
-    @Modifying
-    public void updateEmail(UpdateEmailRequest request) {
-        User user = userRepository.findById(request.id()).orElseThrow(() -> new UserNotFoundException("User with id " + request.id() + " not found."));
+    public UserDto findById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found."));
 
-        user.setEmailVerificationToken(UUID.randomUUID().toString());
-        userRepository.save(user);
-    }
-
-    public void verifyEmail(String token) {
-        User user = userRepository.findByEmailVerificationToken(token).orElseThrow(() -> new UserNotFoundException("User with id " + token + " not found."));
-        user.setEmailVerified(true);
-        user.setEmailVerificationToken(null);
-        userRepository.save(user);
+        return UserMapper.INSTANCE.userToUserDto(user);
     }
 }

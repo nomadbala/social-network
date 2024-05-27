@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import kz.runamicon.socialnetwork.dto.JwtAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +36,10 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public JwtAuthenticationToken generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        String token = createToken(claims, userDetails.getUsername());
+        return new JwtAuthenticationToken(token);
     }
 
 

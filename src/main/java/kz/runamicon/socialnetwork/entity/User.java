@@ -39,10 +39,4 @@ public class User implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
-
-    @Column(name = "email_verified")
-    private boolean emailVerified;
-
-    @Column(name = "email_verification_token")
-    private String emailVerificationToken;
 }
