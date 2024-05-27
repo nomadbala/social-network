@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.io.Serializable;
+
 @Schema(description = "Update email request entity")
 public record UpdateEmailRequest(
         @Schema(description = "Unique identifier of the user", example = "1")
@@ -17,5 +19,5 @@ public record UpdateEmailRequest(
         @Email(message = "Email should be in format user@example.com")
         @Size(min = 5, max = 255, message = "Email should contain from 5 to 255 characters")
         String newEmail
-) {
+) implements Serializable {
 }

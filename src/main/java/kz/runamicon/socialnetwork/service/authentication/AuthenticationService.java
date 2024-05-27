@@ -1,8 +1,8 @@
 package kz.runamicon.socialnetwork.service.authentication;
 
 import jakarta.transaction.Transactional;
-import kz.runamicon.socialnetwork.dto.security.JwtAuthenticationToken;
 import kz.runamicon.socialnetwork.dto.authentication.LoginRequest;
+import kz.runamicon.socialnetwork.dto.security.JwtAuthenticationToken;
 import kz.runamicon.socialnetwork.exception.AuthenticationFailedException;
 import kz.runamicon.socialnetwork.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
