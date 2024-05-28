@@ -12,6 +12,9 @@ import kz.runamicon.socialnetwork.repository.RoleRepository;
 import kz.runamicon.socialnetwork.repository.UserRepository;
 import kz.runamicon.socialnetwork.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +38,7 @@ public class UserDataManipulationService {
 
     @Transactional
     @Modifying
+    @CachePut(value = "users", key = "#request.userId")
     public void updateUsername(UpdateUsernameRequest request) {
         int updates = userRepository.updateUsername(request.id(), request.username());
 
@@ -45,6 +49,7 @@ public class UserDataManipulationService {
 
     @Transactional
     @Modifying
+    @CachePut(value = "users", key = "#request.userId")
     public void updateEmail(UpdateEmailRequest request) {
         int updates = userRepository.updateEmail(request.id(), request.newEmail());
 
@@ -55,6 +60,7 @@ public class UserDataManipulationService {
 
     @Transactional
     @Modifying
+    @CachePut(value = "users", key = "#result.id")
     public JwtAuthenticationToken updateLogin(UpdateLoginRequest request) {
         int updates = userRepository.updateLogin(request.id(), request.newLogin());
 
@@ -71,6 +77,7 @@ public class UserDataManipulationService {
         return UserMapper.INSTANCE.usersToUserDtos(users);
     }
 
+    @Cacheable(value = "users", key = "#id")
     public UserDto findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found."));
 

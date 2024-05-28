@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kz.runamicon.socialnetwork.dto.authentication.LoginRequest;
 import kz.runamicon.socialnetwork.dto.authentication.RegisterRequest;
 import kz.runamicon.socialnetwork.dto.security.JwtAuthenticationToken;
+import kz.runamicon.socialnetwork.dto.user.UserDto;
 import kz.runamicon.socialnetwork.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,12 @@ public class AuthenticationController {
     )
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void register(
+    public UserDto register(
             @RequestBody
             @Parameter(description = "User register request")
             RegisterRequest registerRequest
     ) {
-        userService.register(registerRequest);
+        return userService.register(registerRequest);
     }
 
     @Operation(

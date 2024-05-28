@@ -22,8 +22,8 @@ public class UserService {
 
     private final UserDataManipulationService userDataManipulationService;
 
-    public void register(RegisterRequest request) {
-        userRegistrationService.register(request);
+    public UserDto register(RegisterRequest request) {
+        return userRegistrationService.register(request);
     }
 
     public JwtAuthenticationToken login(LoginRequest request) {
