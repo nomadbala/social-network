@@ -60,7 +60,6 @@ public class UserDataManipulationService {
 
     @Transactional
     @Modifying
-    @CachePut(value = "users", key = "#result.id")
     public JwtAuthenticationToken updateLogin(UpdateLoginRequest request) {
         int updates = userRepository.updateLogin(request.id(), request.newLogin());
 

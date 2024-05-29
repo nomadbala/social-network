@@ -25,7 +25,6 @@ public class UserRegistrationService {
 
     private final PasswordEncoder passwordEncoder;
 
-    @CachePut(value = "users", key = "#result.id")
     public UserDto register(RegisterRequest request) {
         Role role = roleRepository.findByName("ROLE_USER").orElseGet(
                 () -> {
