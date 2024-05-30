@@ -36,12 +36,37 @@ public class UserDataManipulationService {
 
     private final JwtUtil jwtUtil;
 
+
+    @Cacheable(value = "UserDataManipulationService::findById", key = "#id")
+    public UserDto findById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found."));
+
+        return UserMapper.INSTANCE.userToUserDto(user);
+    }
+
+   // @Cacheable(value = "UserDataManipulationService::findByLogin", key = "#login")
+   // public UserDto findByLogin(String login) {
+   //     User user = userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException("User with login " + login + " not found."));
+   //     return UserMapper.INSTANCE.userToUserDto(user);
+   // }
+   // @Cacheable(value = "UserDataManipulationService::findByEmail", key = "#email")
+   // public UserDto findByEmail(String email) {
+   //     User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found."));
+   //     return UserMapper.INSTANCE.userToUserDto(user);
+   // }
+
+    public List<UserDto> findAll() {
+        List<User> users = userRepository.findAll();
+        return UserMapper.INSTANCE.usersToUserDtos(users);
+    }
+
     @Transactional
     @Modifying
-    @CachePut(value = "users", key = "#request.userId")
+    @Caching(put={
+            @CachePut(value = "UserDataManipulationService::findById", key = "#request.id()")
+    })
     public void updateUsername(UpdateUsernameRequest request) {
         int updates = userRepository.updateUsername(request.id(), request.username());
-
         if (updates == 0) {
             throw new UserNotFoundException("User with id " + request.id() + " not found.");
         }
@@ -49,7 +74,9 @@ public class UserDataManipulationService {
 
     @Transactional
     @Modifying
-    @CachePut(value = "users", key = "#request.userId")
+    @Caching(put={
+            @CachePut(value = "UserDataManipulationService::findById", key = "#request.id()")
+    })
     public void updateEmail(UpdateEmailRequest request) {
         int updates = userRepository.updateEmail(request.id(), request.newEmail());
 
@@ -60,26 +87,16 @@ public class UserDataManipulationService {
 
     @Transactional
     @Modifying
+    @Caching(put={
+            @CachePut(value = "UserDataManipulationService::findById", key = "#request.id()")
+    })
     public JwtAuthenticationToken updateLogin(UpdateLoginRequest request) {
         int updates = userRepository.updateLogin(request.id(), request.newLogin());
-
         if (updates == 0) {
             throw new UserNotFoundException("User with id " + request.id() + " not found.");
         }
-
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.newLogin());
         return jwtUtil.generateToken(userDetails);
     }
 
-    public List<UserDto> findAll() {
-        List<User> users = userRepository.findAll();
-        return UserMapper.INSTANCE.usersToUserDtos(users);
-    }
-
-    @Cacheable(value = "users", key = "#id")
-    public UserDto findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found."));
-
-        return UserMapper.INSTANCE.userToUserDto(user);
-    }
 }

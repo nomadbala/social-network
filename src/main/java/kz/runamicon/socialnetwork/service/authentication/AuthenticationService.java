@@ -7,6 +7,7 @@ import kz.runamicon.socialnetwork.exception.AuthenticationFailedException;
 import kz.runamicon.socialnetwork.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -24,7 +25,6 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Transactional
-    @CachePut(value = "users", key = "#result.id")
     public JwtAuthenticationToken login(LoginRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.login(), request.password()));

@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public class CustomUserDetailService implements UserDetailsService {
     private final UserRepository repository;
 
     @Override
+    @Cacheable(value="CustomUserDetailService::loadUserByUsername", key = "#username")
     public UserDetails loadUserByUsername(String username) {
         User user = repository.findByLogin(username).orElseThrow(() -> new UserNotFoundException(username));
 
@@ -36,6 +38,7 @@ public class CustomUserDetailService implements UserDetailsService {
                 authorities);
     }
 
+    @Cacheable(value="CustomUserDetailService::loadUserById", key = "#id")
     public UserDetails loadUserById(Long id) {
         User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException(id.toString()));
 

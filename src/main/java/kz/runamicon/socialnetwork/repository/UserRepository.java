@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByLogin(String login);
 
+    Optional<User> findByEmail(String email);
+
     @Query("UPDATE User u SET u.username = :username WHERE u.id = :id")
     @Modifying
     int updateUsername(Long id, String username);

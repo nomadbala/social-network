@@ -1,5 +1,10 @@
 version: '3.8'
 
+volumes:
+  cache:
+    driver: local
+  postgres-data:
+
 services:
   app:
     build: .
@@ -10,10 +15,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/social_network
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_PASSWORD: c2F5YXRzaGl0Y29kZXIK
     depends_on:
       - db
-      - liquibase
+#      - liquibase
 
   db:
     image: 'postgres:13.1-alpine'
@@ -23,23 +31,30 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: social_network
     ports:
-      - "5432:5432"
+      - "5432:5433"
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
-  liquibase:
-    image: 'liquibase/liquibase'
-    volumes:
-      - ./db/changelog:/liquibase/changelog
-      - ./liquibase.properties:/liquibase/liquibase.properties
-    command: --changeLogFile=/liquibase/changelog/db.changelog-master.xml --url=jdbc:postgresql://db:5432/social_network_db --username=postgres --password=postgres update
-    depends_on:
-      - db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: social_network_db
-      LIQUIBASE_CHANGELOG: /liquibase/changelog/db.changelog-master.xml
+  #liquibase:
+  #  image: 'liquibase/liquibase'
+  #  volumes:
+  #    - ./db/changelog:/liquibase/changelog
+  #    - ./liquibase.properties:/liquibase/liquibase.properties
+  #  command: --changeLogFile=/liquibase/changelog/db.changelog-master.xml --url=jdbc:postgresql://db:5432/social_network_db --username=postgres --password=postgres update
+  #  depends_on:
+  #    - db
+  #  environment:
+  #    POSTGRES_USER: postgres
+  #    POSTGRES_PASSWORD: postgres
+  #    POSTGRES_DB: social_network_db
+  #    LIQUIBASE_CHANGELOG: /liquibase/changelog/db.changelog-master.xml
 
-volumes:
-  postgres-data:
+  redis:
+    image: 'redis:7.2-rc-alpine'
+    restart: always
+    container_name: redis
+    ports:
+      - '6381:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass c2F5YXRzaGl0Y29kZXIK
+    volumes:
+      - cache:/data

@@ -1,5 +1,6 @@
 package kz.runamicon.socialnetwork.service.user;
 
+import jakarta.transaction.Transactional;
 import kz.runamicon.socialnetwork.dto.authentication.LoginRequest;
 import kz.runamicon.socialnetwork.dto.authentication.RegisterRequest;
 import kz.runamicon.socialnetwork.dto.security.JwtAuthenticationToken;
@@ -30,9 +31,16 @@ public class UserService {
         return authenticationService.login(request);
     }
 
+
+    public UserDto findById(Long id) {
+        return userDataManipulationService.findById(id);
+    }
+
+
     public void updateUsername(UpdateUsernameRequest request) {
         userDataManipulationService.updateUsername(request);
     }
+
 
     public void updateEmail(UpdateEmailRequest request) {
         userDataManipulationService.updateEmail(request);
@@ -46,7 +54,5 @@ public class UserService {
         return userDataManipulationService.updateLogin(request);
     }
 
-    public UserDto findById(Long id) {
-        return userDataManipulationService.findById(id);
-    }
+
 }
